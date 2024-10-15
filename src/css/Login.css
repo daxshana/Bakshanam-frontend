@@ -1,0 +1,73 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(5px); /* Blur effect for background */
+  background: url('/home/ukijaffna/Documents/new-baksh/dax/Bhaksharam.now/Bhaksharam.zi/Bhaksharam/frontend/src/img/4ZWOfZXuSzS8r5grD1yZ5FRiZdn6jzDCJGFJ9Xft_1024x1024_copy_a_1024x1024.jpg') no-repeat center center fixed;
+  background-size: cover; /* Ensure background covers the entire container */
+}
+
+form {
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Slightly darker shadow for better visibility */
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 1s ease; /* Apply the fade-in animation */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #007BFF; /* Change border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+.error-message {
+  color: #d9534f; /* Color for error messages */
+  margin-top: 10px;
+  text-align: center;
+}

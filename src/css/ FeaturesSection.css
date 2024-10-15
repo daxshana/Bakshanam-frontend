@@ -1,0 +1,33 @@
+
+.features {
+  background-color: #D9D9D9;
+    text-align: center;
+    padding: 50px;
+    
+  }
+  
+  .features-list {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+  }
+  
+  .feature-item {
+    text-align: center;
+    max-width: 200px;
+  }
+  
+  .feature-item img {
+    width: 80px;
+  }
+  
+  .feature-item h3 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .feature-item p {
+    color:rgb(20, 18, 18);
+  }
+  
+  
