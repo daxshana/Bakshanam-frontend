@@ -1,7 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Sidebar from '../component/Hsidebar';
-import Menus from '../component/Menus'; // Corrected import
+import Foodmanagement from"../component/Foodmanagement";
+import Orders from '../component/Ordermanagement';
 
 const Dashboard = () => {
   return (
@@ -9,8 +10,9 @@ const Dashboard = () => {
       <Sidebar />
       <div className="main-content">
         <Routes>
-           <Route path="/menus" element={<Menus />} /> {/* Changed path to /menu */}
-        </Routes>
+          <Route path="/Foodmanagement" element={<Foodmanagement/>} />
+           <Route path="/orders" element={<Orders />} />
+           </Routes>
       </div>
     </div>
   );

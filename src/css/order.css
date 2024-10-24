@@ -1,115 +1,72 @@
-/* Global Styles */
-body {
-  background-color: #807979;
-  font-family: Arial, sans-serif;
-  align-items: center;
-}
-
-/* Form Container */
+/* Center the form and give some spacing around */
 form {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 30px;
-  border-radius: 10px;
-  background-color: white;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }
 
-/* Title */
-h2 {
-  font-size: 1.8rem;
-  color: black;
+/* Style for the paper/card container */
+.MuiPaper-root {
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.MuiPaper-root:hover {
+  transform: scale(1.02);
+}
+
+/* Style for the text fields */
+.MuiTextField-root {
+  background-color: white;
+  border-radius: 4px;
+}
+
+.MuiInputBase-input {
+  padding: 12px;
+}
+
+/* Style for the submit button */
+.MuiButton-root {
+  background-color: #4caf50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.MuiButton-root:hover {
+  background-color: #388e3c;
+}
+
+/* Typography styles for headers and messages */
+.MuiTypography-h4 {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 20px;
 }
 
-/* Middle Section */
-.middle-section {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f3f4f6; /* Light gray background */
-  border-radius: 8px;
-  color: #333;
-  font-size: 1rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.MuiTypography-root {
+  text-align: center;
+  margin: 10px 0;
 }
 
-/* Inner Form Section */
-.inner-form-section {
-  margin: 20px 0;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #e9f7ef; /* Light green for distinction */
-  border: 1px solid #b2dfdb;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+/* Error and success messages */
+.MuiTypography-colorError {
+  color: red;
 }
 
-/* Labels and Input Fields */
-label {
-  display: block;
-  text-align: left;
-  margin: 15px 0 5px;
-  color: #333;
-  font-weight: bold;
+.MuiTypography-colorSuccess {
+  color: green;
 }
 
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-  border-color: #3b4470; /* Highlight color */
-  outline: none;
-}
-
-/* Error and Success Messages */
-p {
-  font-size: 1rem;
-  margin-top: 10px;
-}
-
-p[style*="color: red"] {
-  color: #e74c3c;
-  font-weight: bold;
-}
-
-p[style*="color: green"] {
-  color: #2ecc71;
-  font-weight: bold;
-}
-
-/* Button Styles */
-button[type="submit"] {
-  width: 100%;
-  background-color: #007BFF;
-  color: white;
-  padding: 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-button[type="submit"]:hover {
-  background-color: #e67e22; /* Slightly darker on hover */
-  transform: scale(1.03); /* Grow a bit on hover */
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 600px) {
-  form {
-    width: 90%;
-    padding: 20px;
+  .MuiPaper-root {
+      padding: 15px;
+      width: 90%;
   }
 }

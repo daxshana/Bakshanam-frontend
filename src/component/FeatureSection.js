@@ -2,8 +2,8 @@
 import React from 'react';
 import '../css/ FeaturesSection.css';
 import order from "./../img/order.png"
-import image1 from "./../img/images.png"
-import image2 from"./../img/image2.jpeg"
+import image1 from "./../img/images-removebg-preview.png"
+import image2 from"./../img/image2-removebg-preview.png"
 const FeaturesSection = () => {
   return (
     <section className="features">

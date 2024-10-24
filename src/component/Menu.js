@@ -1,82 +1,79 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
+import { Container, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../component/CartContexrprovider'; // Adjust the path if necessary
-import axios from 'axios';
-import '../css/Menu.css'; // Ensure this path is correct
-import { FaHeart, FaStar } from 'react-icons/fa'; // Import heart and star icons
+import "../css/Menu.css";
 
-const MenuPage = () => {
-  const [menuItems, setMenuItems] = useState([]); // Use state to store fetched products
+const Menu = () => {
+  const [homeMakers, setHomeMakers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { addToCart, cartItems = [] } = useCart(); // Default empty array if cartItems is undefined
 
-  // State for favorite items
-  const [favorites, setFavorites] = useState(new Set());
-
-  // Fetch products from the backend
   useEffect(() => {
-    axios.get("http://localhost:5004/api/products")
-      .then(response => {
-        console.log(response.data); // Check if image URLs are correct
-        setMenuItems(response.data); // Set products from API response
-      })
-      .catch(error => console.error("Error fetching products:", error));
+    const fetchHomeMakers = async () => {
+      try {
+        const response = await fetch('http://localhost:5004/api/home-makers/getHomeMakers');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched home makers:", data);
+        setHomeMakers(data);
+      } catch (err) {
+        console.error('Error fetching home makers:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomeMakers();
   }, []);
 
-  const handleAddToCart = (item) => {
-    addToCart(item);
-    // alert(`${item.name} has been added to the cart!`);
-  };
-
-  const handleViewCart = () => {
-    navigate('/cart'); // Function to navigate to the cart page
-  };
-
-  // Toggle favorite status
-  const toggleFavorite = (itemId) => {
-    const updatedFavorites = new Set(favorites);
-    if (updatedFavorites.has(itemId)) {
-      updatedFavorites.delete(itemId);
-    } else {
-      updatedFavorites.add(itemId);
+  const handleViewHomeMaker = (homeMakerId, homeMakerName) => {
+    const token = localStorage.getItem('token'); // Check if the user is logged in
+    if (!token) {
+      alert('You need to log in to view this home maker.');
+      return; // Prevent navigation if not logged in
     }
-    setFavorites(updatedFavorites);
+    navigate(`/Foodview/${homeMakerId}`, { state: { name: homeMakerName } });
+    console.log(homeMakerId); // Navigate to Foodview with homeMakerId
   };
 
   return (
-    <div className="menu-page">
-      <main className="menu-content">
-        {menuItems.map(item => (
-          <div key={item._id} className="menu-item"> {/* Use _id from database */}
-            {/* Display the product image */}
-            {item.imageUrl && (
-              <img 
-                src={`http://localhost:5004${item.imageUrl}`} // Ensure proper image path
-                alt={item.name}
-                className="product-image"
-              />
-            )}
-            <h2>{item.name}</h2>
-            <p className="price">Rs {item.price}</p>
-            <p className="description">{item.description}</p> {/* Add description */}
-            <p className="home-maker">Home Maker: {item.homeMakerName}</p> {/* Add home maker name */}
-            <div className="item-actions">
-              <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
-              <span 
-                className={`favorite-icon ${favorites.has(item._id) ? 'active' : ''}`} 
-                onClick={() => toggleFavorite(item._id)}
-              >
-                <FaHeart />
-              </span>
-              <span className="rating-icon">
-                <FaStar />
-              </span>
-            </div>
-          </div>
-        ))}
-      </main>
-    </div>
+    <section id='HomeMakers' className="py-5 bg-light">
+      <Container>
+        <h2 className="text-center mb-4">Featured Home Makers</h2>
+        <div className="row">
+          {loading ? (
+            <p className="text-center">Loading home makers...</p>
+          ) : (
+            homeMakers.length > 0 ? (
+              homeMakers.map((homeMaker) => (
+                <div key={homeMaker._id} className="col-md-4 mb-4">
+                  <Card>
+                    <Card.Img
+                      variant="top"
+                      src={`http://localhost:5004/${homeMaker.imageUrls?.[0] || 'placeholder.png'}`}
+                      alt={homeMaker.name}
+                    />
+                    <Card.Body>
+                      <Card.Title>{homeMaker.name}</Card.Title>
+                      <Card.Text>{homeMaker.description || 'Specializing in homemade products'}</Card.Text>
+                      <Button variant="link" onClick={() => handleViewHomeMaker(homeMaker._id, homeMaker.name)}>
+                        View Home Maker
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No home makers found.</p>
+            )
+          )}
+        </div>
+      </Container>
+    </section>
   );
 };
 
-export default MenuPage;
+export default Menu;

@@ -24,7 +24,7 @@ const Login = () => {
                 // Redirect based on user role
                 switch (response.data.role) {
                     case 'Admin':
-                        navigate('/dashboard');
+                        navigate('/dashboard/*');
                         break;
                     case 'User':
                         navigate('/');

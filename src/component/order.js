@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Typography, Paper } from '@mui/material'; // Material UI components
 import "../css/order.css";
 
 const OrderForm = () => {
     const [customerName, setCustomerName] = useState('');
     const [foodItem, setFoodItem] = useState('');
     const [address, setAddress] = useState('');
-    const [quantity, setQuantity] = useState(1);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,8 +19,8 @@ const OrderForm = () => {
         const orderData = { 
             customerName, 
             address,
-            items: [{ itemName: foodItem, quantity, price }], 
-            totalAmount: quantity * price 
+            items: [{ itemName: foodItem, price }], // No quantity here, just the item
+            totalAmount: price 
         };
 
         try {
@@ -27,9 +29,11 @@ const OrderForm = () => {
             setCustomerName('');
             setFoodItem('');
             setAddress('');
-            setQuantity(1);
             setError(null); // Clear any previous error
             window.alert("Order successfully placed!"); // Alert message on success
+
+            // Redirect to payment page after order is placed
+            navigate('/payment');
         } catch (err) {
             console.error('Error placing order:', err.response ? err.response.data : err.message);
             setError('Could not place order.');
@@ -38,47 +42,48 @@ const OrderForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Place Order</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
-            <label>
-                Customer Name:
-                <input
-                    type="text"
+        <Paper elevation={3} style={{ padding: '20px', maxWidth: '600px', margin: '20px auto' }}>
+            <Typography variant="h4" gutterBottom>
+                Place Order
+            </Typography>
+            {error && <Typography color="error">{error}</Typography>}
+            {success && <Typography color="success">{success}</Typography>}
+            
+            <form onSubmit={handleSubmit}>
+                <TextField
+                    label="Customer Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     required
                 />
-            </label>
-            <label>
-                Food Item:
-                <input
-                    type="text"
-                    value={foodItem}
-                    onChange={(e) => setFoodItem(e.target.value)}
-                    required
-                />
-            </label>
-            <label>
-                Address:
-                <input
-                    type="text"
+                
+                
+                
+                <TextField
+                    label="Address"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     required
                 />
-            </label>
-            <label>
-                Email
-                <input
-                    
-                />
-            </label>
-            <button type="submit">Submit Order</button>
-        </form>
+                
+                <Button 
+                    type="submit" 
+                    variant="contained" 
+                    color="primary" 
+                    fullWidth 
+                    style={{ marginTop: '20px' }}
+                >
+                    Submit Order
+                </Button>
+            </form>
+        </Paper>
     );
 };
 
 export default OrderForm;
-                                                                                  

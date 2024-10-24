@@ -1,10 +1,11 @@
 .hero {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
   padding: 50px;
   width: 100vw;
-  background: url('/home/ukijaffna/Documents/new-baksh/dax/Bhaksharam.now/Bhaksharam.zi/Bhaksharam/frontend/src/img/Title-Image_80464696efa86.jpg') no-repeat center center fixed;
+  background: url('./../img/pexels-ella-olsson-572949-1640774.jpg') no-repeat center center fixed;  
+  height: 70vb;
   background-size: cover;
 }
 
@@ -13,28 +14,21 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.hero-images {
-  width: 45%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Centers content vertically inside hero-content */
+  align-items: center; /* Centers content horizontally */
 }
 
 .hero-content h1 {
   font-size: 3rem;
   font-weight: bold;
-  color: black;
-  text-align: center; /* Center-align the heading text */
+  color: rgb(21, 55, 65);
+  text-align: center; /* Ensures the heading text is centered */
 }
 
 .hero-content p {
   margin-top: 20px;
   font-size: 1.2rem;
-  color: white;
+  color:  rgb(21, 55, 65);
 }
 
 .get-started-btn {
@@ -46,23 +40,24 @@
   cursor: pointer;
 }
 
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero {
-      flex-direction: column;
-      text-align: center;
-      padding: 20px;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
   }
 
   .hero-content, .hero-images {
-      width: 100%;
+    width: 100%;
   }
 
   .hero-content h1 {
-      font-size: 2rem;
+    font-size: 2rem;
   }
 
   .hero-content p {
-      font-size: 1rem;
+    font-size: 1rem;
   }
 }

@@ -56,9 +56,9 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* <div className="footer-bottom py-3" style={{ backgroundColor: '#647C4C)' }}>
+      <div className="footer-bottom py-3" style={{ backgroundColor: '#647C4C)' }}>
         <p>© 2024 Bhakshanam. ALL RIGHTS RESERVED.</p>
-      </div> */}
+      </div>
     </footer>
   );
 };

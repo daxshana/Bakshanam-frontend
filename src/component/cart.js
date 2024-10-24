@@ -1,8 +1,9 @@
 import React from 'react';
 import { useCart } from '../component/CartContexrprovider';
 import { useNavigate } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, Paper, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import '../css/cart.css';
-
 
 const CartPage = () => {
   const { cart, updateCartItemQuantity, removeFromCart } = useCart();
@@ -42,70 +43,72 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
-      <h1 className="cart-title">Cart</h1>
-      <main>
-        <h2 className="cart-items-title">Items</h2>
-        <table className="cart-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Typography variant="h4" gutterBottom>
+        Cart
+      </Typography>
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Menu Name</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Quantity</TableCell>
+              <TableCell align="right">Total Price</TableCell>
+              <TableCell align="right">Remove</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {cart.map((item) => (
-              <tr key={item._id}>
-                <td>{item.name}</td>
-                <td>Rs{item.price.toFixed(2)}</td>
-                <td>
-                  <button
+              <TableRow key={item._id}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell align="right">Rs {item.price.toFixed(2)}</TableCell>
+                <TableCell align="right">
+                  <Button
                     onClick={() => decreaseQuantity(item._id)}
                     disabled={item.quantity <= 1}
-                    className="Quantity"
+                    variant="outlined"
                   >
                     -
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
+                  </Button>
+                  <span style={{ margin: '0 10px' }}>{item.quantity}</span>
+                  <Button
                     onClick={() => increaseQuantity(item._id)}
-                    className="Quantity"
+                    variant="outlined"
                   >
                     +
-                  </button>
-                </td>
-                <td>Rs{(item.price * item.quantity).toFixed(2)}</td>
-                <td>
-                  <button
+                  </Button>
+                </TableCell>
+                <TableCell align="right">Rs {(item.price * item.quantity).toFixed(2)}</TableCell>
+                <TableCell align="right">
+                  <IconButton
                     onClick={() => confirmRemoveItem(item._id)}
-                    className="text-red-500"
+                    color="secondary"
                   >
-                    Remove
-                  </button>
-                </td>
-              </tr>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-        <h2 className="cart-totals-title">Cart Totals</h2>
-        <div className="cart-totals">
-          <div className="cart-subtotal">
-            <span>Subtotal</span>
-            <p>Rs{getTotalCartAmount().toFixed(2)}</p>
-          </div>
-          <div className="cart-total">
-            <span>Total</span>
-            <b>Rs{(getTotalCartAmount() + 2).toFixed(2)}</b> {/* Adding a flat fee */}
-          </div>
-        </div>
+      <Typography variant="h6" style={{ marginTop: '20px' }}>
+        Subtotal: Rs {getTotalCartAmount().toFixed(2)}
+      </Typography>
+      <Typography variant="h6">
+        Total (including fee): Rs {(getTotalCartAmount() + 2).toFixed(2)}
+      </Typography>
 
-        <button className="checkout-btn" onClick={handleCheckout}>
-          PROCEED TO CHECKOUT
-        </button>
-      </main>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleCheckout}
+        style={{ marginTop: '20px' }}
+      >
+        PROCEED TO CHECKOUT
+      </Button>
     </div>
   );
 };

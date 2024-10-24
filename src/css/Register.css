@@ -1,4 +1,4 @@
-/* General body and html styles */
+General body and html styles
 body, html {
   height: 100%;
   margin: 0;
@@ -12,7 +12,7 @@ body, html {
   align-items: center;
   min-height: 100vh; /* Makes the container take up the full height of the viewport */
   padding: 20px;
-  background: url('/home/ukijaffna/Documents/new-baksh/dax/Bhaksharam.now/Bhaksharam.zi/Bhaksharam/frontend/src/img/30811075-7724-45a6-9c60-c633b6b4cc4d.webp') no-repeat center center fixed;
+  /* background: url('/home/ukijaffna/Documents/new-baksh/dax/Bhaksharam.now/Bhaksharam.zi/Bhaksharam/frontend/src/img/30811075-7724-45a6-9c60-c633b6b4cc4d.webp') no-repeat center center fixed; */
   background-size: cover; /* Ensure the background image covers the entire area */
 }
 
