@@ -1,23 +1,43 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Sidebar from '../component/Sidebar';
+import { Box, CssBaseline } from '@mui/material';
+import Sidebar from './Sidebar';
 import Orders from '../component/Ordermanagement';
 import Users from '../component/User';
-import Menus from '../component/Menus';
-
+import Homemaker from '../component/Homemaker Admin';
+import ContactUs from '../component/ContactAdmin';
+import Payment from '../component/Payment admin';
+import Overview from "../component/Ordermanagement";
 const Dashboard = () => {
   return (
-    <div className="dashboard">
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '' }}>
+      <CssBaseline />
       <Sidebar />
-      <div className="main-content">
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          transition: 'margin-left 0.3s',
+          marginLeft: '240px',
+          bgcolor: 'white',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          borderRadius: '20px',
+          m: 2,
+        }}
+      >
         <Routes>
-          <Route path="/overview" element={<div>Overview Content</div>} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/users" element={<Users />} />
-          <Route path="/Menus" element={<Menus />} />
+          <Route path="/Homemaker" element={<Homemaker />} />
+          <Route path="/contactus" element={<ContactUs />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/Overview" element={<Overview />} />
+
+          
         </Routes>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

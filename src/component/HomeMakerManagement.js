@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Alert, Box, Typography } from '@mui/material';
 
-const AddHomeMaker = () => {
+const AddHomeMaker = ({ onAddHomeMaker, onUpdateHomeMaker, initialData, isEditing }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [images, setImages] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    useEffect(() => {
+        if (isEditing && initialData) {
+            setName(initialData.name);
+            setDescription(initialData.description);
+            setImages(initialData.images || []);
+        } else {
+            setName('');
+            setDescription('');
+            setImages([]);
+        }
+    }, [initialData, isEditing]);
+
     const handleAddHomeMaker = async (e) => {
         e.preventDefault();
+        setSuccessMessage(''); // Reset success message on submit
+        setErrorMessage('');   // Reset error message on submit
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
@@ -19,53 +34,128 @@ const AddHomeMaker = () => {
             return;
         }
 
-        images.forEach((image) => {
+        Array.from(images).forEach((image) => {
             formData.append('images', image);
         });
 
         try {
-            const response = await fetch('http://localhost:5004/api/home-makers/addHomeMaker', {
-                method: 'POST',
+            const url = isEditing
+                ? `http://localhost:5004/api/home-makers/updateHomeMaker/${initialData._id}`
+                : 'http://localhost:5004/api/home-makers/addHomeMaker';
+
+            const response = await fetch(url, {
+                method: isEditing ? 'PUT' : 'POST',
                 body: formData,
             });
 
             if (response.ok) {
                 const result = await response.json();
-                setSuccessMessage('Home maker added successfully!');
-                setErrorMessage('');
-                console.log('HomeMaker added:', result);
+                if (isEditing) {
+                    onUpdateHomeMaker(initialData._id, result);
+                } else {
+                    onAddHomeMaker(result);
+                }
+                setSuccessMessage(isEditing ? 'Home maker updated successfully!' : 'Home maker added successfully!');
+                // Clear fields after successful submission
+                setName('');
+                setDescription('');
+                setImages([]);
             } else {
                 const errorData = await response.json();
-                throw new Error('Failed to add HomeMaker: ' + (errorData.message || 'Unknown error'));
+                throw new Error(errorData.message || 'Failed to process request.');
             }
         } catch (error) {
-            setErrorMessage('Failed to add Home maker. Please try again.');
-            setSuccessMessage('');
+            setErrorMessage(error.message || 'Failed to process request. Please try again.');
         }
     };
 
     return (
-        <Form onSubmit={handleAddHomeMaker}>
-            <Form.Group controlId="formHomeMakerName">
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)} required />
-            </Form.Group>
-            <Form.Group controlId="formHomeMakerDescription">
-                <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="Enter description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-            </Form.Group>
-            <Form.Group controlId="formHomeMakerImages">
-                <Form.Label>Images</Form.Label>
-                <Form.Control type="file" multiple onChange={(e) => setImages([...e.target.files])} required />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-                Add Home Maker
+        <form onSubmit={handleAddHomeMaker}>
+            <Box mb={2}>
+                <TextField
+                    label="Name"
+                    variant="outlined"
+                    fullWidth
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
+            </Box>
+            <Box mb={2}>
+                <TextField
+                    label="Description"
+                    variant="outlined"
+                    multiline
+                    rows={3}
+                    fullWidth
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                />
+            </Box>
+            <Box mb={2}>
+                <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="raised-button-file"
+                    type="file"
+                    multiple
+                    onChange={(e) => setImages([...e.target.files])}
+                    required={!isEditing}
+                />
+                <label htmlFor="raised-button-file">
+                    <Button 
+                        variant="outlined" 
+                        component="span" 
+                        sx={{ 
+                            color: '#F56E0F', 
+                            borderColor: '#F56E0F', 
+                            '&:hover': { 
+                                backgroundColor: '#F56E0F', 
+                                color: 'white' 
+                            } 
+                        }}
+                    >
+                        Upload Images
+                    </Button>
+                </label>
+            </Box>
+
+            {/* Preview images */}
+            <Box mb={2}>
+                {images.length > 0 && (
+                    <div>
+                        <Typography variant="subtitle1">Uploaded Images:</Typography>
+                        <div style={{ display: 'flex', marginTop: '8px' }}>
+                            {Array.from(images).map((image, index) => (
+                                <img
+                                    key={index}
+                                    src={URL.createObjectURL(image)}
+                                    alt={`Uploaded preview ${index}`}
+                                    style={{ width: '50px', height: '50px', marginRight: '5px', borderRadius: '4px' }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </Box>
+
+            <Button 
+                variant="contained" 
+                sx={{ 
+                    backgroundColor: '#F56E0F', 
+                    color: 'white', 
+                    '&:hover': { 
+                        backgroundColor: '#F56E0F', 
+                        color: 'white' 
+                    } 
+                }} 
+                type="submit">
+                {isEditing ? 'Update Home Maker' : 'Add Home Maker'}
             </Button>
-            {successMessage && <Alert variant="success" className="mt-3">{successMessage}</Alert>}
-            {errorMessage && <Alert variant="danger" className="mt-3">{errorMessage}</Alert>}
-        </Form>
-
-
+            {successMessage && <Alert severity="success" sx={{ mt: 2 }}>{successMessage}</Alert>}
+            {errorMessage && <Alert severity="error" sx={{ mt: 2 }}>{errorMessage}</Alert>}
+        </form>
     );
 };
 

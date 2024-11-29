@@ -1,44 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCart } from '../component/CartContexrprovider';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/material/styles';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../css/cart.css';
+
+const CustomCheckoutButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#F56E0f',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#F56E0f',
+  },
+}));
 
 const CartPage = () => {
   const { cart, updateCartItemQuantity, removeFromCart } = useCart();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Ensure every item has a default quantity of 1 if no quantity is set
+    cart.forEach((item) => {
+      if (!item.quantity || item.quantity === 0) {
+        updateCartItemQuantity(item._id, () => ({
+          ...item,
+          quantity: 1,
+        }));
+      }
+    });
+  }, [cart, updateCartItemQuantity]);
+
   const handleCheckout = () => {
     navigate('/order', { state: { cart, totalPrice: getTotalCartAmount() } });
-  };
-
-  const confirmRemoveItem = (id) => {
-    if (window.confirm('Are you sure you want to remove this item?')) {
-      removeFromCart(id);
-    }
+    toast.success("Proceeding to checkout");
   };
 
   const getTotalCartAmount = () => {
-    if (!cart.length) return 0;
-    return cart.reduce((acc, item) => {
-      const itemTotal = (item.price || 0) * (item.quantity || 0);
-      return acc + itemTotal;
-    }, 0);
+    return cart.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 0), 0);
   };
 
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (id, maxQuantity) => {
+    const item = cart.find((item) => item._id === id);
+    if (item.quantity >= maxQuantity) {
+      toast.error("No more stock available for this item.");
+      return;
+    }
     updateCartItemQuantity(id, (item) => ({
       ...item,
-      quantity: (item.quantity || 0) + 1
+      quantity: (item.quantity || 0) + 1,
     }));
+    toast.success("Quantity increased!");
   };
 
   const decreaseQuantity = (id) => {
     updateCartItemQuantity(id, (item) => {
       const newQuantity = (item.quantity || 0) - 1;
-      return { ...item, quantity: Math.max(newQuantity, 1) };
+      return { ...item, quantity: Math.max(newQuantity, 1) }; // Prevent going below 1
     });
+    toast.info("Quantity decreased!");
+  };
+
+  const handleRemoveItem = (id) => {
+    removeFromCart(id);
+    toast.warn("Item removed from cart.");
   };
 
   return (
@@ -73,7 +99,7 @@ const CartPage = () => {
                   </Button>
                   <span style={{ margin: '0 10px' }}>{item.quantity}</span>
                   <Button
-                    onClick={() => increaseQuantity(item._id)}
+                    onClick={() => increaseQuantity(item._id, item.Quantity)}
                     variant="outlined"
                   >
                     +
@@ -82,8 +108,8 @@ const CartPage = () => {
                 <TableCell align="right">Rs {(item.price * item.quantity).toFixed(2)}</TableCell>
                 <TableCell align="right">
                   <IconButton
-                    onClick={() => confirmRemoveItem(item._id)}
-                    color="secondary"
+                    onClick={() => handleRemoveItem(item._id)}
+                    color="error"
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -101,14 +127,15 @@ const CartPage = () => {
         Total (including fee): Rs {(getTotalCartAmount() + 2).toFixed(2)}
       </Typography>
 
-      <Button
+      <CustomCheckoutButton
         variant="contained"
-        color="primary"
         onClick={handleCheckout}
         style={{ marginTop: '20px' }}
       >
         PROCEED TO CHECKOUT
-      </Button>
+      </CustomCheckoutButton>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

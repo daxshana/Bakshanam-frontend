@@ -1,4 +1,9 @@
 /* General navbar styling */
+.navbar-logo img.logo {
+  height: 50px; /* Adjust the height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
 .navbar {
   background-color: whitesmoke; /* Light pastel color */
   padding: 5px 20px; /* Reduced padding to lower height */

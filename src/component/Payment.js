@@ -1,99 +1,89 @@
-// // Payment.js
-// import React, { useEffect, useState } from 'react';
-// import '../css/payment.css';
+import React from 'react';
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "../css/Paypalbutton.css";
 
-// const Payment = () => {
-//   const [loading, setLoading] = useState(true);
+const PayPalButton = () => {
+  const location = useLocation();
+  const navigate = useNavigate(); // Initialize navigate
+  const { totalPrice } = location.state || { totalPrice: 0 };
 
-//   useEffect(() => {
-//     const script = document.createElement('script');
-//     script.src = `https://www.paypal.com/sdk/js?client-id=AfU-SdjqNWLzt8hQ6CSW0eesZpusRBoCUrpGlPMxnh3GnnkBoretOK9T3z0J5f_YhNfvzWMuHRKTsOyl`; // Replace with your actual Client ID
-//     script.async = true;
-//     script.onload = () => {
-//       setLoading(false); // SDK loaded successfully
-//       window.paypal.Buttons({
-//         createOrder: (data, actions) => {
-//           return actions.order.create({
-//             purchase_units: [{
-//               amount: {
-//                 value: '3.18', // Amount to charge
-//               },
-//             }],
-//           });
-//         },
-//         onApprove: async (data, actions) => {
-//           const order = await actions.order.capture();
-//           console.log('Order captured:', order);
-//           alert('Payment successful!');
-//           // Handle successful payment (e.g., redirect to a success page)
-//         },
-//       }).render('#paypal-button-container'); // Render the PayPal button
-//     };
-//     script.onerror = () => {
-//       console.error('Failed to load PayPal SDK');
-//       alert('Failed to load PayPal SDK. Please try again later.');
-//     };
-//     document.body.appendChild(script);
+  // Define handleCreateOrder function
+  const handleCreateOrder = (data, actions) => {
+    if (totalPrice && !isNaN(totalPrice)) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: totalPrice.toFixed(2),
+            currency_code: "USD",
+          },
+        }],
+      });
+    } else {
+      console.error("Total price is undefined or not a valid number.");
+      toast.error("Invalid total price.");
+      throw new Error("Invalid total price");
+    }
+  };
 
-//     return () => {
-//       // Cleanup the script if the component is unmounted
-//       document.body.removeChild(script);
-//     };
-//   }, []);
+  // Define handleOnApprove function
+  const handleOnApprove = (data, actions) => {
+    return actions.order.capture().then((details) => {
+      console.log('Payment successful!', details);
+      toast.success('Payment successful! Thank you for your purchase.');
+      
+      // Send payment details to backend here if needed
+      fetch('http://localhost:5004/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          orderId: details.id,
+          payerId: details.payer.payer_id,
+          amount: details.purchase_units[0].amount.value,
+          currency: details.purchase_units[0].amount.currency_code,
+          status: details.status,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Payment saved to database:", data);
 
-//   return (
-//     <div className="payment-container">
-//       <h2>Pay for Job Matching Service</h2>
-//       {loading ? (
-//         <div className="loading">Loading payment options...</div>
-//       ) : (
-//         <div id="paypal-button-container"></div>
-//       )}
-//     </div>
-//   );
-// };
+        // Navigate to menu page after successful payment
+        navigate('/menu');
+      })
+      .catch(error => {
+        console.error("Error saving payment to database:", error);
+        toast.error("Payment was successful, but an error occurred while saving it.");
+      });
+    });
+  };
 
-// export default Payment;
-import React, { useState } from 'react';
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
-
-const PaymentComponent = ({ totalPrice, onPaymentSuccess }) => {
-  const [paymentStatus, setPaymentStatus] = useState(''); // Payment status state
-
-  const handleSuccessPayment = (details) => {
-    setPaymentStatus('Payment successful!');
-    console.log('Payment successful:', details);
-    onPaymentSuccess(details); // Trigger success callback
+  // Define handleOnError function
+  const handleOnError = (err) => {
+    console.error('PayPal Checkout Error:', err);
+    toast.error('An error occurred during the payment process. Please try again.');
   };
 
   return (
     <div>
-      <PayPalScriptProvider options={{ "client-id": "AekNtOqaue-rDWKqAJj9no35ecpAsuWzdvMpHsB33EMm9FAZuK-knv4DHfNl0va1GMKxs_avJiXfN850" }}>
+      <PayPalScriptProvider options={{ "client-id": "AekNtOqaue-rDWKqAJj9no35ecpAsuWzdvMpHsB33EMm9FAZuK-knv4DHfNl0va1GMKxs_avJiXfN850", currency: "USD" }}>
+        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         <PayPalButtons
-          style={{ layout: "vertical" }}
-          createOrder={(data, actions) => {
-            return actions.order.create({
-              purchase_units: [{
-                amount: {
-                  value: totalPrice.toFixed(2), // Total price for the payment
-                },
-              }],
-            });
-          }}
-          onApprove={async (data, actions) => {
-            const details = await actions.order.capture();
-            handleSuccessPayment(details); // Call success handler
-          }}
-          onError={(err) => {
-            setPaymentStatus('Payment failed. Please try again.');
-            console.error('Payment error:', err);
-          }}
+          createOrder={handleCreateOrder}
+          onApprove={handleOnApprove}
+          onError={handleOnError}
+          style={{ layout: 'vertical' }}
         />
       </PayPalScriptProvider>
 
-      {paymentStatus && <div>{paymentStatus}</div>} {/* Display payment status */}
+      {/* Add ToastContainer here for global toast notifications */}
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </div>
   );
 };
 
-export default PaymentComponent;
+export default PayPalButton;
