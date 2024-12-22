@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Button, Badge, Box, Popover } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Button, Badge, Box, Popover, useMediaQuery } from '@mui/material';
 import { ShoppingCart, Menu as MenuIcon, ExitToApp } from '@mui/icons-material';
 import { useCart } from '../component/CartContexrprovider';
 import logo from '../img/BHAKSHANAM (1).png';
+import { useTheme } from '@mui/material/styles';
 
 const Navbar = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -53,42 +56,52 @@ const Navbar = () => {
           <img
             src={logo}
             alt="Bhakshanam Logo"
-            style={{ height: '50px', marginRight: '10px' }} // Increased logo size
+            style={{ height: '50px', marginRight: '10px' }}
           />
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', fontSize: '1.2rem' }}>
-            Bhakshanam
-          </Typography>
+          {!isSmallScreen && (
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', fontSize: '1.2rem' }}>
+              Bhakshanam
+            </Typography>
+          )}
         </Link>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <Button sx={navButtonStyle}>Home</Button>
-          </Link>
-          <Link to="/Menu" style={{ textDecoration: 'none' }}>
-            <Button sx={navButtonStyle}>Menu</Button>
-          </Link>
-          <Link to="/Contactus" style={{ textDecoration: 'none' }}>
-            <Button sx={navButtonStyle}>Contact Us</Button>
-            <>
-              <Link to="/orderdetail" style={{ textDecoration: 'none' }}>
-                <Button sx={navButtonStyle}>Order Details</Button>
-              </Link> 
-             <Link to="/profile" style={{ textDecoration: 'none' }}>
-                <Button sx={navButtonStyle}>Profile</Button>
-              </Link>
-            </>
-          </Link>
-        </Box>
+        {!isSmallScreen ? (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button sx={navButtonStyle}>Home</Button>
+            </Link>
+            <Link to="/Menu" style={{ textDecoration: 'none' }}>
+              <Button sx={navButtonStyle}>Menu</Button>
+            </Link>
+            <Link to="/Contactus" style={{ textDecoration: 'none' }}>
+              <Button sx={navButtonStyle}>Contact Us</Button>
+            </Link>
+            <Link to="/orderdetail" style={{ textDecoration: 'none' }}>
+              <Button sx={navButtonStyle}>Order Details</Button>
+            </Link>
+            <Link to="/profile" style={{ textDecoration: 'none' }}>
+              <Button sx={navButtonStyle}>Profile</Button>
+            </Link>
+          </Box>
+        ) : (
+          <IconButton onClick={handleMenuClick} sx={{ color: '#333' }}>
+            <MenuIcon />
+          </IconButton>
+        )}
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton component={Link} to="/cart" sx={{ marginLeft: '8px' }}>
-            <Badge badgeContent={cart.length} color="secondary" sx={{
-              '& .MuiBadge-badge': {
-                backgroundColor: '#f56e0f',
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-              }
-            }}>
+            <Badge
+              badgeContent={cart.length}
+              color="secondary"
+              sx={{
+                '& .MuiBadge-badge': {
+                  backgroundColor: '#f56e0f',
+                  color: '#FFFFFF',
+                  fontWeight: 'bold',
+                },
+              }}
+            >
               <ShoppingCart sx={{ color: '#333' }} />
             </Badge>
           </IconButton>
@@ -119,14 +132,6 @@ const Navbar = () => {
             </>
           )}
         </Box>
-
-        <IconButton
-          aria-label="menu"
-          onClick={handleMenuClick}
-          sx={{ display: { xs: 'block', md: 'none' }, color: '#333' }}
-        >
-          <MenuIcon />
-        </IconButton>
 
         <Popover
           open={open}
@@ -183,4 +188,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

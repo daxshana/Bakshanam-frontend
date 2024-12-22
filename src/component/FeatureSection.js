@@ -19,12 +19,11 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 8000); // Change the image every 8 seconds
+    }, 8000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, [images.length]);
 
-  // Styles for the section
   const sectionStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -32,22 +31,23 @@ const HeroSection = () => {
     padding: '2rem',
     backgroundColor: '#f8f4f1',
     gap: '2rem',
+    flexWrap: 'wrap',
     flexDirection: 'row',
-    position: 'relative',
   };
 
   const textContainerStyle = {
     flex: 1,
     color: '#000',
     textAlign: 'left',
+    maxWidth: '600px',
   };
 
   const imageContainerStyle = {
-    position: 'relative',
     flex: 1,
-    height: '400px',
+    height: '300px',
     overflow: 'hidden',
     borderRadius: '15px',
+    maxWidth: '600px',
   };
 
   const imageStyle = {
@@ -58,19 +58,15 @@ const HeroSection = () => {
   };
 
   const titleStyle = {
-    fontSize: '2.5rem',
-    color: '#000',
+    fontSize: '2rem',
     marginBottom: '1rem',
     fontWeight: 'bold',
-    textShadow: 'none',
-    fontFamily: '"Faculty Glyphic", sans-serif',
   };
 
   const paragraphStyle = {
     fontSize: '1rem',
     lineHeight: '1.5',
     color: '#555',
-    textShadow: 'none',
   };
 
   const buttonStyle = {
@@ -86,11 +82,6 @@ const HeroSection = () => {
     alignItems: 'center',
     transition: 'background-color 0.3s ease',
     textDecoration: 'none',
-  };
-
-  const buttonHoverStyle = {
-    ...buttonStyle,
-    backgroundColor: '#e87a2d',
   };
 
   return (

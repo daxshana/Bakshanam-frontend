@@ -1,7 +1,19 @@
 import React, { useEffect } from 'react';
 import { useCart } from '../component/CartContexrprovider';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, Paper, IconButton } from '@mui/material';
+import {
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Typography,
+  Paper,
+  IconButton,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -21,7 +33,6 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ensure every item has a default quantity of 1 if no quantity is set
     cart.forEach((item) => {
       if (!item.quantity || item.quantity === 0) {
         updateCartItemQuantity(item._id, () => ({
@@ -34,7 +45,7 @@ const CartPage = () => {
 
   const handleCheckout = () => {
     navigate('/order', { state: { cart, totalPrice: getTotalCartAmount() } });
-    toast.success("Proceeding to checkout");
+    toast.success('Proceeding to checkout');
   };
 
   const getTotalCartAmount = () => {
@@ -44,36 +55,36 @@ const CartPage = () => {
   const increaseQuantity = (id, maxQuantity) => {
     const item = cart.find((item) => item._id === id);
     if (item.quantity >= maxQuantity) {
-      toast.error("No more stock available for this item.");
+      toast.error('No more stock available for this item.');
       return;
     }
     updateCartItemQuantity(id, (item) => ({
       ...item,
       quantity: (item.quantity || 0) + 1,
     }));
-    toast.success("Quantity increased!");
+    toast.success('Quantity increased!');
   };
 
   const decreaseQuantity = (id) => {
     updateCartItemQuantity(id, (item) => {
       const newQuantity = (item.quantity || 0) - 1;
-      return { ...item, quantity: Math.max(newQuantity, 1) }; // Prevent going below 1
+      return { ...item, quantity: Math.max(newQuantity, 1) };
     });
-    toast.info("Quantity decreased!");
+    toast.info('Quantity decreased!');
   };
 
   const handleRemoveItem = (id) => {
     removeFromCart(id);
-    toast.warn("Item removed from cart.");
+    toast.warn('Item removed from cart.');
   };
 
   return (
-    <div className="cart-page">
+    <div className="cart-page" style={{ padding: '20px' }}>
       <Typography variant="h4" gutterBottom>
         Cart
       </Typography>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ overflowX: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -105,12 +116,11 @@ const CartPage = () => {
                     +
                   </Button>
                 </TableCell>
-                <TableCell align="right">Rs {(item.price * item.quantity).toFixed(2)}</TableCell>
                 <TableCell align="right">
-                  <IconButton
-                    onClick={() => handleRemoveItem(item._id)}
-                    color="error"
-                  >
+                  Rs {(item.price * item.quantity).toFixed(2)}
+                </TableCell>
+                <TableCell align="right">
+                  <IconButton onClick={() => handleRemoveItem(item._id)} color="error">
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -120,20 +130,26 @@ const CartPage = () => {
         </Table>
       </TableContainer>
 
-      <Typography variant="h6" style={{ marginTop: '20px' }}>
-        Subtotal: Rs {getTotalCartAmount().toFixed(2)}
-      </Typography>
-      <Typography variant="h6">
-        Total (including fee): Rs {(getTotalCartAmount() + 2).toFixed(2)}
-      </Typography>
-
-      <CustomCheckoutButton
-        variant="contained"
-        onClick={handleCheckout}
-        style={{ marginTop: '20px' }}
-      >
-        PROCEED TO CHECKOUT
-      </CustomCheckoutButton>
+      <Grid container spacing={2} style={{ marginTop: '20px' }}>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h6">
+            Subtotal: Rs {getTotalCartAmount().toFixed(2)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h6">
+            Total (including fee): Rs {(getTotalCartAmount() + 2).toFixed(2)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: 'center' }}>
+          <CustomCheckoutButton
+            variant="contained"
+            onClick={handleCheckout}
+          >
+            PROCEED TO CHECKOUT
+          </CustomCheckoutButton>
+        </Grid>
+      </Grid>
 
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
