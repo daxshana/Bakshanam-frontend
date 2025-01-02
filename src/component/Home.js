@@ -76,9 +76,6 @@ const Navbar = () => {
             <Link to="/Contactus" style={{ textDecoration: 'none' }}>
               <Button sx={navButtonStyle}>Contact Us</Button>
             </Link>
-            <Link to="/orderdetail" style={{ textDecoration: 'none' }}>
-              <Button sx={navButtonStyle}>Order Details</Button>
-            </Link>
             <Link to="/profile" style={{ textDecoration: 'none' }}>
               <Button sx={navButtonStyle}>Profile</Button>
             </Link>
@@ -147,6 +144,22 @@ const Navbar = () => {
           }}
         >
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                onClick={handleMenuClose}
+                sx={{
+                  color: '#333',
+                  backgroundColor: 'transparent',
+                  fontWeight: 'bold',
+                  '&:hover': {
+                    color: '#f56e0f',
+                    backgroundColor: 'rgba(245, 110, 15, 0.1)',
+                  },
+                }}
+              >
+                Close
+              </Button>
+            </Box>
             <Link to="/" style={{ textDecoration: 'none' }}>
               <Button sx={{ ...navButtonStyle, width: '100%', justifyContent: 'flex-start' }}>Home</Button>
             </Link>

@@ -1,123 +1,8 @@
-// import React, { useEffect, useState } from 'react';
-// import { 
-//   Container, 
-//   Typography, 
-//   Grid, 
-//   Card, 
-//   CardMedia, 
-//   CardContent, 
-//   CardActions, 
-//   Button, 
-//   CircularProgress,
-//   Box
-// } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
-
-// const HomeMakers = () => {
-//   const [homeMakers, setHomeMakers] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchHomeMakers = async () => {
-//       try {
-//         const response = await fetch('http://localhost:5004/api/home-makers/getHomeMakers');
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! Status: ${response.status}`);
-//         }
-//         const data = await response.json();
-//         console.log("Fetched home makers:", data);
-//         setHomeMakers(data);
-//       } catch (err) {
-//         console.error('Error fetching home makers:', err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchHomeMakers();
-//   }, []);
-
-//   const handleViewHomeMaker = (homeMakerId, homeMakerName) => {
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//       alert('You need to log in to view this home maker.');
-//       return;
-//     }
-//     navigate(`/Foodview/${homeMakerId}`, { state: { name: homeMakerName } });
-//     console.log(homeMakerId);
-//   };
-
-//   return (
-//     <Container maxWidth="lg" sx={{ py: 8 }}>
-//       <Typography variant="h2" component="h1" gutterBottom align="center">
-//         Featured Home Makers
-//       </Typography>
-//       {loading ? (
-//         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-//           <CircularProgress />
-//         </Box>
-//       ) : (
-//         <Grid container spacing={4}>
-//           {homeMakers.length > 0 ? (
-//             homeMakers.map((homeMaker) => (
-//               <Grid item key={homeMaker._id} xs={12} sm={6} md={4}>
-//                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-//                   <CardMedia
-//                     component="img"
-//                     sx={{
-//                       height: 200,
-//                       objectFit: 'cover',
-//                     }}
-//                     image={homeMaker.imageUrls?.[0] ? `http://localhost:5004/${homeMaker.imageUrls[0]}` : '/placeholder.svg?height=200&width=200'}
-//                     alt={homeMaker.name}
-//                   />
-//                   <CardContent sx={{ flexGrow: 1 }}>
-//                     <Typography gutterBottom variant="h5" component="h2">
-//                       {homeMaker.name}
-//                     </Typography>
-//                     <Typography>
-//                       {homeMaker.description || 'Specializing in homemade products'}
-//                     </Typography>
-//                   </CardContent>
-//                   <CardActions>
-//                     <Button 
-//                       size="small" 
-//                       onClick={() => handleViewHomeMaker(homeMaker._id, homeMaker.name)}
-//                       sx={{
-//                         backgroundColor: 'orange',
-//                         color: 'white',
-//                         '&:hover': {
-//                           backgroundColor: 'blue',
-//                           color: 'white',
-//                         },
-//                       }}
-//                     >
-//                       View Home Maker
-//                     </Button>
-//                   </CardActions>
-//                 </Card>
-//               </Grid>
-//             ))
-//           ) : (
-//             <Typography variant="h6" align="center" sx={{ width: '100%' }}>
-//               No home makers found.
-//             </Typography>
-//           )}
-//         </Grid>
-//       )}
-//     </Container>
-//   );
-// };
-
-// export default HomeMakers;
-
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiMapPin, FiArrowRight } from 'react-icons/fi'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
 
 const HomeMakers = () => {
   const [homeMakers, setHomeMakers] = useState([])
@@ -132,7 +17,6 @@ const HomeMakers = () => {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        console.log("Fetched home makers:", data)
         setHomeMakers(data)
       } catch (err) {
         console.error('Error fetching home makers:', err)
@@ -181,7 +65,7 @@ const HomeMakers = () => {
     },
     grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)', // Sets a maximum of four columns
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', // Responsive grid
       gap: '40px',
       padding: '24px 0',
     },
@@ -191,10 +75,6 @@ const HomeMakers = () => {
       overflow: 'hidden',
       boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)',
       transition: 'all 0.3s ease',
-      ':hover': {
-        transform: 'translateY(-10px)',
-        boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)',
-      },
     },
     cardImageContainer: {
       position: 'relative',
@@ -206,11 +86,6 @@ const HomeMakers = () => {
       height: '220px',
       objectFit: 'cover',
       transition: 'transform 0.3s ease',
-    },
-    cardHover: {
-      ':hover img': {
-        transform: 'scale(1.1)',
-      },
     },
     badge: {
       position: 'absolute',
@@ -262,11 +137,6 @@ const HomeMakers = () => {
       cursor: 'pointer',
       transition: 'all 0.3s ease',
       width: '100%',
-      ':hover': {
-        backgroundColor: '#151419',
-        transform: 'translateY(-2px)',
-        boxShadow: '0 5px 10px rgba(0,0,0,0.2)',
-      },
     },
     loadingContainer: {
       display: 'flex',
@@ -316,17 +186,16 @@ const HomeMakers = () => {
         <div style={styles.grid}>
           {homeMakers.length > 0 ? (
             homeMakers.map((homeMaker) => (
-              <div key={homeMaker._id} style={{...styles.card, ...styles.cardHover}}>
+              <div key={homeMaker._id} style={styles.card}>
                 <div style={styles.cardImageContainer}>
                   <img
                     style={styles.cardImage}
-                    src={homeMaker.imageUrls?.[0] ? 
-                      `http://localhost:5004/${homeMaker.imageUrls[0]}` : 
-                      '/placeholder.svg?height=220&width=300'
-                    }
+                    src={homeMaker.imageUrls?.[0] 
+                      ? `http://localhost:5004/${homeMaker.imageUrls[0]}` 
+                      : '/placeholder.svg'}
                     alt={homeMaker.name}
                   />
-                      </div>
+                </div>
                 <div style={styles.content}>
                   <h3 style={styles.homeMakerName}>{homeMaker.name}</h3>
                   <div style={styles.location}>

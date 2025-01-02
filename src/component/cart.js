@@ -13,6 +13,7 @@ import {
   Typography,
   Paper,
   IconButton,
+  useMediaQuery,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
@@ -31,6 +32,7 @@ const CustomCheckoutButton = styled(Button)(({ theme }) => ({
 const CartPage = () => {
   const { cart, updateCartItemQuantity, removeFromCart } = useCart();
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     cart.forEach((item) => {
@@ -80,18 +82,24 @@ const CartPage = () => {
 
   return (
     <div className="cart-page" style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant={isMobile ? 'h5' : 'h4'} gutterBottom align="center">
         Cart
       </Typography>
 
-      <TableContainer component={Paper} style={{ overflowX: 'auto' }}>
+      <TableContainer
+        component={Paper}
+        style={{
+          overflowX: isMobile ? 'scroll' : 'auto',
+          marginBottom: '20px',
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Menu Name</TableCell>
-              <TableCell align="right">Price</TableCell>
+              {!isMobile && <TableCell align="right">Price</TableCell>}
               <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Total Price</TableCell>
+              {!isMobile && <TableCell align="right">Total Price</TableCell>}
               <TableCell align="right">Remove</TableCell>
             </TableRow>
           </TableHead>
@@ -99,12 +107,15 @@ const CartPage = () => {
             {cart.map((item) => (
               <TableRow key={item._id}>
                 <TableCell>{item.name}</TableCell>
-                <TableCell align="right">Rs {item.price.toFixed(2)}</TableCell>
+                {!isMobile && (
+                  <TableCell align="right">Rs {item.price.toFixed(2)}</TableCell>
+                )}
                 <TableCell align="right">
                   <Button
                     onClick={() => decreaseQuantity(item._id)}
                     disabled={item.quantity <= 1}
                     variant="outlined"
+                    size="small"
                   >
                     -
                   </Button>
@@ -112,13 +123,16 @@ const CartPage = () => {
                   <Button
                     onClick={() => increaseQuantity(item._id, item.Quantity)}
                     variant="outlined"
+                    size="small"
                   >
                     +
                   </Button>
                 </TableCell>
-                <TableCell align="right">
-                  Rs {(item.price * item.quantity).toFixed(2)}
-                </TableCell>
+                {!isMobile && (
+                  <TableCell align="right">
+                    Rs {(item.price * item.quantity).toFixed(2)}
+                  </TableCell>
+                )}
                 <TableCell align="right">
                   <IconButton onClick={() => handleRemoveItem(item._id)} color="error">
                     <DeleteIcon />
@@ -130,14 +144,14 @@ const CartPage = () => {
         </Table>
       </TableContainer>
 
-      <Grid container spacing={2} style={{ marginTop: '20px' }}>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={6}>
-          <Typography variant="h6">
+          <Typography variant="h6" align="center">
             Subtotal: Rs {getTotalCartAmount().toFixed(2)}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="h6">
+          <Typography variant="h6" align="center">
             Total (including fee): Rs {(getTotalCartAmount() + 2).toFixed(2)}
           </Typography>
         </Grid>
@@ -145,6 +159,7 @@ const CartPage = () => {
           <CustomCheckoutButton
             variant="contained"
             onClick={handleCheckout}
+            fullWidth
           >
             PROCEED TO CHECKOUT
           </CustomCheckoutButton>
